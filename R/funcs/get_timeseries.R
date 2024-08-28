@@ -7,7 +7,7 @@
 #'@param file_path specifies the file path from which to read the cleaned timeseries
 #'@param adm_level sets the adm level for which data to pull with options adm0, adm1, adm2
 #'@return cleaned timeseries dataset for all countries
-#'
+#'@export
 get_timeseries <- function(data,
                            date_var = "date",
                            case_var = "cases",

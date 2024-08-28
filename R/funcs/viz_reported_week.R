@@ -30,7 +30,8 @@ viz_reported_week <- function(now_estimates, adm_level){
     left_join(., now_estimates$estimates$summarised[variable == "reported_cases"]) %>%
     mutate(
       year = year(date),
-      month = month(date),
+      month = month(date),_forecast’
+>
       week = week(date + days(3))
     ) %>%
     #group_by(week) %>%

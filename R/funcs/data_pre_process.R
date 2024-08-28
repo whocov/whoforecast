@@ -10,6 +10,7 @@
 #'adm0, adm1, adm2
 #'@param date_from date from which to start the analysis
 #'@return tibble nested by specified adm_level
+#'@export
 data_pre_process <- function(timeseries,
                              adm_level = "adm0",
                              date_from = min(timeseries$date)){
