@@ -30,11 +30,14 @@ get_nowcast <- function(data_rep,
                         create_report = TRUE){
 
 
-  iso_3_names <- data_rep %>% unnest(1) %>% .[["iso_3_code"]] %>% .[1]
+  iso_3_names <- data_rep %>% unnest() %>% .[["iso_3_code"]] %>% .[1]
 
-  adm_names <-  data_rep %>% unnest(1) %>% .[[paste0(adm_level, "_name")]] %>% .[1]
+  adm_names <-  data_rep %>% unnest() %>% .[[paste0(adm_level, "_name")]] %>% .[1]
 
-  data_epinow <- data_rep %>% unnest(1) %>% .[,1:3]
+  data_epinow <- data_rep %>% unnest() %>% .[,1:2]
+
+  print(data_epinow)
+
 
   if(rep_frequency == "daily"){
 
@@ -63,7 +66,7 @@ get_nowcast <- function(data_rep,
   model_ests <-  tryCatch({
 
     epinow(
-    reported_cases = data_epinow,
+    data = data_epinow,
     generation_time = generation_time_opts(generation_time),
     delays = delays,
     rt = rt_estor,
@@ -79,6 +82,7 @@ get_nowcast <- function(data_rep,
 
     })
 
+print(model_ests)
 
   model_ests$fig_Rt <- viz_Rt(model_ests, adm_level)
   model_ests$fig_reported <- viz_reported_week(model_ests, adm_level)

@@ -17,9 +17,9 @@
 #'
 #'@return list including the mean, sd and distribution type for the incubation period
 #'
-get_inc_period <- function(mean = 1.4,
-                           sd = 0.1,
-                           dist = "gamma",
+get_inc_period <- function(mean = 1.5,
+                           sd = 0.3,
+                           dist = "lognormal",
                            max_value = 6){
 
   # Default from literature (add ref) 1.4 days (95% CI, 1.3–1.6)
