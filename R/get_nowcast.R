@@ -36,8 +36,6 @@ get_nowcast <- function(data_rep,
 
   data_epinow <- data_rep %>% unnest() %>% .[,1:2]
 
-  print(data_epinow)
-
 
   if(rep_frequency == "daily"){
 
