@@ -9,6 +9,7 @@
 #'@param now_estimates List of estimates from the nowcasting/forecasting
 #'@param adm_level sets the adm level for which data to pull with options adm0, adm1, adm2
 #'
+#'@export
 viz_reported_week <- function(now_estimates, adm_level){
 
   # Post processing
