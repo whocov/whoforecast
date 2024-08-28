@@ -11,16 +11,15 @@ LazyData: true
 Imports:
   dplyr,
   sf,
+  EpiNow2,
   janitor,
   ggplot2,
   tidyr,
   stringr,
   png,
-  ggpattern,
   ggnewscale,
   grid,
-  readr,
-  patchwork
+  readr
 Remotes: coolbutuseless/ggpattern
 RoxygenNote: 7.3.1
 Suggests: 
