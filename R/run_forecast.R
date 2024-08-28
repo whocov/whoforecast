@@ -9,6 +9,8 @@
 #' @param data data frame with the observed data for the country or region
 #' @return figures for daily or weekly analysis and a report in Word format
 #' @seealso [Epinow2::epinow()] which this function wraps
+#' @import dplyr
+#' @import tidyverse
 #' @export
 run_forecast <- function(data,
                          adm_level = "adm0",

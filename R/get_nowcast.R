@@ -14,7 +14,8 @@
 #'@param output_dir the directory to store the figures and results
 #'@param date_from the start date from which to fit the model
 #'@param store_model_res if TRUE stores the model results as an rds file. Defaults to FALSE
-#'@import ggplot
+#'@import ggplot2
+#'@import EpiNow2
 #'@export
 get_nowcast <- function(data_rep,
                         generation_time,

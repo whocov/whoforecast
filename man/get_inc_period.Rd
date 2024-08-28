@@ -4,7 +4,7 @@
 \alias{get_inc_period}
 \title{Set incubation period distribution}
 \usage{
-get_inc_period(mean = 1.4, sd = 0.1, dist = "gamma", max_value = 6)
+get_inc_period(mean = 1.5, sd = 0.3, dist = "lognormal", max_value = 6)
 }
 \arguments{
 \item{mean}{mean of the incubation period distribution. If specified in a
