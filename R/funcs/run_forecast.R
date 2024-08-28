@@ -1,0 +1,60 @@
+#' Run short term forecast using the epinow2 package for estimation
+#'
+#' Creates figures and a report on nowcast and/or short-term forecast for a given
+#' country. This uses Epinow2 package for estimation but allows more flexibility
+#' in application relevant to who uses such as weekly data, report creation for policy
+#' makers and the option to include only a forecast with no nowcast when reporting
+#' delays are not expected or counts are derived from cumulative data with no back-corrections.
+#'
+#' @return figures for daily or weekly analysis and a report in Word format
+#' @seealso [Epinow2::epinow()] which this function wraps
+#' @export
+run_forecast <- function(data,
+                         adm_level = "adm0",
+                         rep_freq = "weekly",
+                         nowcast = FALSE,
+                         generation_time = get_gen_time(),
+                         incubation_period = get_inc_period(),
+                         reporting_delay = get_rep_delay(),
+                         forecast = TRUE,
+                         horizon = 7,
+                         create_report = TRUE,
+                         date_from = min(data$date),
+                         output_dir = here("outputs"),
+                         store_model_res = FALSE,
+                         date_var = "date",
+                         case_var = "cases"
+){
+
+  # Set date for figures
+  date_pipe_run <- Sys.Date()
+
+  # Set time series at chosen adm level
+  timeseries <- get_timeseries(data,
+                               date_var = date_var,
+                               case_var = case_var,
+                               adm_level = adm_level) #%>%
+    # filter_at(vars(paste0(adm_level, "_name")), any_vars(. %in% apply_to))
+  #  filter_at(vars("adm0_name"), any_vars(. %in% apply_to))
+
+  # Nest timeseries by adm level
+  timeseries_nest <- data_pre_process(timeseries,
+                                      adm_level = adm_level,
+                                      date_from = date_from)
+
+
+  # Run nowcasting across all nested adm levels - this also saves figures
+  # for each adm_level
+  results <- timeseries_nest$data  %>% map(., get_nowcast,
+                                           generation_time,
+                                           incubation_period,
+                                           reporting_delay,
+                                           adm_level = adm_level,
+                                           horizon = horizon,
+                                           date_from,
+                                           create_report = create_report)
+
+  return(results)
+
+}
+

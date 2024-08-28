@@ -1,0 +1,206 @@
+```{r lockfile-rt, include = FALSE, message = FALSE}
+renv::use("EpiEstim@2.2-4")
+```
+
+```{r rt-load-pkg}
+library(EpiEstim)
+```
+
+### Explanations
+
+The package *EpiEstim* is used to estimate the effective, time-varying reproduction number, $Rt$,
+using a branching process method that requires daily incidence data and an estimate of the disease's serial interval. Through this method, $Rt$ is estimated over weekly sliding windows, i.e., successive overlapping 7-day periods. $Rt$ estimates can be biased by reporting delays. For this reason, this report excludes the last `r params$incomplete_days` days included in the incidence data as incomplete, and retains a total of `r params$r_estim_window` days to obtain the most recent estimate of the time varying reproduction number.
+
+
+$Rt$ is defined as the average number of secondary cases that an infected individual would infect if
+conditions remained as they were at time _t_. It represents the transmission potential of a disease at a specified timepoint. Observing changes in $Rt$ provides valuable information about variations in transmissibility during an epidemic, and can be used to assess the effectiveness of control interventions aimed at reducing virus transmission. 
+For more information on *Rt* and its interpretation, see [this paper by the Royal Society](https://royalsociety.org/-/media/policy/projects/set-c/set-covid-19-R-estimates.pdf).
+
+
+### Results
+
+```{r rt-wrappers-prep}
+# Function to process a distrcrete object and output `si_discr` argument for
+# EpiEstim::make_config
+
+wrap_si <- function(si) {
+  domain <- seq(1L, to = si$prob_dist$qf(0.999), by = 1L)
+  pmf <- si$prob_dist$d(domain)
+  pmf[1] <- 0
+  pmf <- pmf / sum(pmf)
+  pmf
+}
+
+
+# Function to process output from `EpiEstim::estimate_R` and output a tibble
+# with dates, mean R, and associated confidence intervals
+#'
+#' @param x An `estimate_R` object
+#' @param incid (Optional) The incidence2 object on which R values have been
+#'   estimated.
+wrap_res <- function(x, incid = NULL) {
+  stopifnot(inherits(x, "estimate_R"))
+  out <- tibble::tibble(x$R)
+  out <- dplyr::select(out,
+    start = t_start,
+    end = t_end,
+    mean = `Mean(R)`,
+    sd = `Std(R)`,
+    median = `Median(R)`,
+    lower = `Quantile.0.025(R)`,
+    upper = `Quantile.0.975(R)`
+  )
+  if (!is.null(incid)) {
+    stopifnot(inherits(incid, "incidence2"))
+    dates <- unique(incidence2::get_dates(incid))
+    out$start <- dates[out$start]
+    out$end <- dates[out$end]
+  }
+
+  class(out) <- c("R_estimate", class(out))
+  out
+}
+
+# Run EpiEstim
+ee_config <- make_config(si_distr = wrap_si(si))
+```
+
+#### Global transmissibility
+
+These analyses present results for the global incidence, i.e. without
+stratification. Results include:
+ 
+* a graph of the estimates of $R_t$ of the observed data over time, with
+associated 95% credibility intervals
+
+* a table summarising these results for the last `r params$r_estim_window` days
+
+```{r rt-estim-global}
+# This code uses the {EpiEstim} function `estimate_R` to generate an estimate of
+# the global Rt over time
+res_epiestim_global <- dat_i_day %>%
+  regroup() %>%
+  get_count_value() %>%
+  estimate_R(config = ee_config) %>%
+  wrap_res(dat_i_day)
+```
+
+```{r rt-plot-global}
+# Plot to visualise the global Rt over time
+ggplot(res_epiestim_global, aes(x = end)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), fill = pale_green) +
+  geom_line(aes(y = median), color = dark_green) +
+  geom_hline(yintercept = 1, color = dark_pink) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  labs(
+    x = "",
+    y = "Instantaneous reproduction number (Rt)",
+    title = "Estimates of Rt (EpiEstim)"
+  )
+```
+
+```{r rt-table-global}
+# This code generates a table with Rt values on the last params$r_estim_window
+res_epiestim_global %>%
+  tail(params$r_estim_window) %>%
+  mutate(
+    date = end,
+    mean = round(mean, 2),
+    median = round(median, 2),
+    `95% ci` = sprintf(
+      "[%1.2f ; %1.2f]",
+      lower,
+      upper
+    )
+  ) %>%
+  dplyr::select(date, mean, median, `95% ci`) %>%
+  rename(
+    "mean $R$" = mean,
+    "median $R$" = median
+  ) %>%
+  set_names(toupper) %>%
+  kbl() %>%
+  kable_paper("striped", font_size = 18, full_width = FALSE)
+```
+
+#### Transmissibility by group
+
+These analyses present Rt results for the stratified incidence. Results include:
+
+* a graph of the estimates of $R_t$ of the observed data over time per group, with
+associated 95% credibility intervals
+
+* a plot with the latest $R_t$ estimate per group, with associated 95% credibility intervals
+
+* a table with the latest $R_t$ estimates per group, with associated 95% credibility intervals
+
+```{r rt-estim-group}
+# This code estimates Rt by group_var, keeping only the last 14 days of data
+res_epiestim_group <- dat_i_day %>%
+  nest(data = c(get_date_index_name(.), get_count_value_name(.))) %>%
+  mutate(
+    res_epiestim = map(data, ~ wrap_res(
+      estimate_R(.x$count, config = ee_config),
+      dat_i_day
+    ))
+  ) %>%
+  unnest(res_epiestim) %>%
+  dplyr::select(-data)
+```
+
+```{r rt-plot-group, fig.height = 5 / 3 * n_groups}
+# Plot of Rt estimates for each group_var over time
+ggplot(res_epiestim_group, aes(x = end)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), fill = pale_green) +
+  geom_line(aes(y = median), color = dark_green) +
+  geom_hline(yintercept = 1, color = dark_pink) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  facet_wrap(~ .data[[group_var]], ncol = 1) +
+  labs(
+    x = "",
+    y = "Instantaneous reproduction number (Rt)",
+    title = "Estimates of Rt (EpiEstim)"
+  )
+```
+
+```{r rt-plot-estimates-group}
+# Plot of latest estimates of Rt for each group_var
+res_epiestim_group %>%
+  filter(end == max(end)) %>%
+  ggplot(aes(y = .data[[group_var]]), fill = custom_grey) +
+  geom_point(aes(x = median), color = dark_green) +
+  geom_errorbar(aes(xmin = lower, xmax = upper), color = dark_green) +
+  geom_vline(xintercept = 1, color = dark_pink) +
+  labs(
+    title = "Latest estimates of Rt",
+    subtitle = sprintf(
+      "As of %s",
+      format(max(get_dates(dat_i_day)), "%d %B %Y")
+    ),
+    y = "",
+    x = "Instantaneous Reproduction Number (Rt)"
+  )
+```
+
+```{r rt-table-group}
+# This code generates a table with the latest Rt estimates for each group_var
+res_epiestim_group %>%
+  filter(end == max(end)) %>%
+  mutate(
+    mean = round(mean, 2),
+    median = round(median, 2),
+    `95% ci` = sprintf(
+      "[%1.2f ; %1.2f]",
+      lower,
+      upper
+    )
+  ) %>%
+  dplyr::select(-c(sd, lower, upper, count_variable)) %>%
+  rename(
+    "mean $R$" = mean,
+    "median $R$" = median
+  ) %>%
+  set_names(toupper) %>%
+  kbl() %>%
+  kable_paper("striped", font_size = 18, full_width = FALSE)
+```

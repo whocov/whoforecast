@@ -1,0 +1,190 @@
+```{r lockfile-rt, include = FALSE, message = FALSE}
+renv::use("R0@1.3-1")
+```
+
+```{r rt-load-pkg}
+library(R0)
+```
+
+### Explanations
+
+The package *R0* is used to estimate the effective, time-varying reproduction number, $Rt$, implementing a time-dependent method, described by [Wallinga and Teunis](https://academic.oup.com/aje/article/160/6/509/79472?login=false). This method requires incidence data and an estimate of the generation time, which here is approximated using the disease's serial interval distribution.
+$Rt$ estimates can be biased by reporting delays. For this reason, this report excludes the last `r params$incomplete_days` days included in the incidence data as incomplete.
+
+$Rt$ is defined as the average number of secondary cases that an infected individual would infect if
+conditions remained as they were at time _t_. It represents the transmission potential of a disease at a specified timepoint. Observing changes in $Rt$ provides valuable information about variations in transmissibility during an epidemic, and can be used to assess the effectiveness of control interventions aimed at reducing virus transmission. 
+For more information on *Rt* and its interpretation, see [this paper by the Royal Society](https://royalsociety.org/-/media/policy/projects/set-c/set-covid-19-R-estimates.pdf).
+
+### Results
+
+```{r rt-wrappers-prep}
+# This code uses the serial interval to approximate the generation time
+mGT <- generation.time("empirical", si$prob_dist$d(si_x))
+
+# Helper function to get R0 outputs in a tidy format, compatible with pipelines
+r0_quantiles <- function(Rt) {
+  res <- data.frame(
+    median = Rt$R,
+    lower  = Rt$conf.int$lower,
+    upper  = Rt$conf.int$upper
+  )
+  # R0 set missing values as Rt = 0, which is probably not what we want
+  res[res == 0] <- NA
+
+  return(res)
+}
+```
+
+
+#### Global transmissibility
+
+These analyses present results for the global incidence, i.e. without
+stratification. Results include:
+ 
+* a graph of the estimates of $R_t$ of the observed data over time, with
+associated 95% credibility intervals
+  
+* a table summarising these results for the last `r params$r_estim_window` days
+
+```{r rt-estim-global}
+# This code uses the {R0} function `estimate.R()` to generate Rt estimates over
+# time using daily incidence data (dat_i_day)
+res_r0_global <- dat_i_day %>%
+  regroup() %>%
+  mutate(r0_quantiles(estimate.R(
+    get_count_value(.),
+    mGT,
+    date_index,
+    begin = 1L, end = length(date_index),
+    nsim = 1e4, method = "TD"
+  )$estimates$TD)
+  )
+```
+
+```{r rt-plot-global}
+# Plot of global Rt estimates over time for daily incidence data included in
+# dat_i_day
+res_r0_global %>%
+  na.omit() %>%
+  ggplot(aes(x = date_index, y = median, ymin = lower, ymax = upper)) +
+  geom_ribbon(fill = pale_green) +
+  geom_line(color = dark_green) +
+  geom_hline(yintercept = 1, color = dark_pink) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  labs(
+    x = "",
+    y = "Instantaneous reproduction number (Rt)",
+    title = "Estimates of Rt (R0)"
+  )
+```
+
+```{r rt-table-global}
+# This code generates a table with Rt estimates for the last
+# `r params$r_estim_window` days included in dat_i_day
+res_r0_global %>%
+  tail(params$r_estim_window) %>%
+  mutate(
+    date = date_index,
+    median = round(median, 2),
+    `95% ci` = sprintf(
+      "[%1.2f ; %1.2f]",
+      lower,
+      upper
+    )
+  ) %>%
+  dplyr::select(date, median, `95% ci`) %>%
+  rename(
+    "median $R$" = median
+  ) %>%
+  set_names(toupper) %>%
+  kbl(row.names = FALSE) %>%
+  kable_paper("striped", font_size = 18, full_width = FALSE)
+```
+
+#### Transmissibility by group
+
+These analyses present results for incidence stratified by `r group_var`. Results in this section include:
+ 
+* a graph of the estimates of $R_t$ of the observed data over time for each `r group_var`, with
+associated 95% credibility intervals
+  
+* a plot with the latest $R_t$ results by `r group_var`
+
+* a table with the latest $R_t$ estimates by `r group_var`
+
+```{r rt-estim-group}
+# This code uses the {R0} function `estimate_R()` to obtain Rt estimates by
+# group_var over time
+res_r0_group <- dat_i_day %>%
+  regroup(groups = get_group_names(.)) %>%
+  arrange(date_index) %>%
+  group_by(.data[[get_group_names(.)]]) %>%
+  mutate(
+    r0_quantiles(estimate.R(
+      .data$count,
+      mGT,
+      date_index,
+      begin = 1L, end = length(date_index),
+      nsim = 1e4, method = "TD"
+    )$estimates$TD)
+  )
+```
+
+```{r rt-plot-group, fig.height=15}
+# Plot of Rt estimates over time by group_var
+res_r0_group %>%
+  na.omit() %>%
+  ggplot(aes(x = date_index, y = median, ymin = lower, ymax = upper)) +
+  geom_ribbon(fill = pale_green) +
+  geom_line(color = dark_green) +
+  geom_hline(yintercept = 1, color = dark_pink) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  facet_wrap(~ .data[[group_var]], ncol = 1) +
+  labs(
+    x = "",
+    y = "Instantaneous reproduction number (Rt)",
+    title = "Estimates of Rt (R0)"
+  )
+```
+
+```{r rt-plot-estimates-group}
+# Plot of latest estimates of Rt by group_var
+res_r0_group %>%
+  na.omit() %>%
+  filter(date_index == max(date_index)) %>%
+  ggplot(aes(y = .data[[group_var]]), fill = custom_grey) +
+  geom_point(aes(x = median), color = dark_green) +
+  geom_errorbar(aes(xmin = lower, xmax = upper), color = dark_green) +
+  geom_vline(xintercept = 1, color = dark_pink) +
+  labs(
+    title = "Latest estimates of Rt",
+    subtitle = sprintf(
+      "As of %s",
+      format(max(get_dates(dat_i_day)), "%d %B %Y")
+    ),
+    y = "",
+    x = "Instantaneous Reproduction Number (Rt)"
+  )
+```
+
+```{r rt-table-group}
+# This code generates a table with latest estimates of Rt by group_var
+res_r0_group %>%
+  na.omit() %>%
+  filter(date_index == max(date_index)) %>%
+  mutate(
+    median = round(median, 2),
+    `95% ci` = sprintf(
+      "[%1.2f ; %1.2f]",
+      lower,
+      upper
+    )
+  ) %>%
+  dplyr::select(all_of(c(group_var, "median", "95% ci"))) %>%
+  rename(
+    "median $R$" = median
+  ) %>%
+  set_names(toupper) %>%
+  kbl() %>%
+  kable_paper("striped", font_size = 18, full_width = FALSE)
+```

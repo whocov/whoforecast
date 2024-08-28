@@ -1,0 +1,107 @@
+---
+title: "Report on epidemiological situation"
+subtitle: "Nowcasting and short-term forecasting of cases counts"
+author: "World Health Organization"
+date: "`r paste0(format(Sys.Date(), '%d %B %Y'))`"
+output: word_document
+params:
+  data_rep: NULL
+  model_ests: NULL
+  adm_level: NULL
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+# Load packages
+pacman::p_load(tidyverse, here, readxl, lubridate, EpiNow2)
+
+model_ests <- params$model_ests
+adm_level <- params$adm_level
+timeseries <- params$data_rep
+  
+```
+
+# Overview 
+
+# Background
+
+## Nowcasting
+Often when collecting epidemiological data in an outbreak situation, there are limitations 
+in the data collected and interpretation in real-time is challenging. This can be due to reporting delays, where cases in the current or recent weeks have not yet been fully reported due to
+logistical challenges in the field, limited laboratory capacity or other factors. 
+
+The purpose of nowcasting is to estimate case counts, growth rate, and doubling time in the recent period where reporting delays apply to give a more clear picture of current burden. Furthermore, by estimating the growth rate current trends can be determined, which may otherwise be challenging due to noise and reporting irregularities in the data. 
+
+## Short-term forecasting
+By extension, short-term forecasting is used to estimate the number of cases in the near future based on the current trends. This can be useful for planning purposes, to anticipate the number of cases that may be expected in the coming weeks should the current trends continue. **Note this approach is not suitable for mid- or long-term forecasting and the time window should not be extended beyond a few weeks.**
+
+Disclaimer: the estimates from both nowcasting and short-term forecasting are based on the assumption that the reporting delays can be clearly determined and that current trends will continue. This may not be the case if there are changes in the underlying dynamics of the outbreak, such as changes in public health measures, changes in population behavior, or other factors.
+
+
+# Data summary
+
+Since `r format(min(timeseries$date), "%d %B %Y")` there have been a total of `r sum(timeseries$confirm)` cases reported. The date of last report is `r format(max(timeseries$date), "%d %B %Y")`. The trend is shown in Figure 1. 
+
+
+```{r, fig.height=3.5, fig.width=6}
+
+timeseries %>%
+  ggplot(aes(x = date, y = confirm)) +
+  geom_col(fill = whotools::who_palette(type = "qual2")[4], col = "black") +
+  labs(title = "Case counts",
+       x = "Date",
+       y = "Cases") +
+  scale_x_date(date_breaks = "1 month", date_minor_breaks = "1 week", date_labels = "%d %b \n%Y") +
+  whotools::theme_who()
+
+```
+
+# Results
+
+## Effective reproduction number 
+
+The model estimates the effective reproduction number as `r model_ests$summary[3] %>% select(numeric_estimate) %>% unlist() %>% .['numeric_estimate.median']` (`r model_ests$summary[3] %>% select(numeric_estimate) %>% unlist() %>% .['numeric_estimate.lower_50']`, `r model_ests$summary[3] %>% select(numeric_estimate) %>% unlist() %>% .['numeric_estimate.upper_50']`). 
+
+
+```{r, fig.cap = "Estimates of time varying reproduction number"}
+
+viz_Rt(model_ests, adm0) 
+
+```
+
+## Reported cases
+
+The number of cases in the next 
+
+```{r, fig.cap = "Estimate reported cases"}
+
+rep_ests <- model_ests$estimates$summarised %>% filter(variable == "reported_cases") 
+
+viz_reported_week(model_ests, adm0)
+
+```
+
+
+
+# Limitations
+* The projections are limited to **short-term only** obtained by estimating the trend which will not account for any interventions put in place.
+* The estimates do not account for the seasonality present in many diseases, such as dengue, cholera and others which are dependent on weather phenomena. 
+* If the reported cases are subject to a reporting delay and the nowcast component is included to estimate the cases from recent weeks, the accuracy of the projections will depend on how well the reporting delay distribution is characterized. If the default unknown distribution is used recent case counts may differ substantially to the true case counts. 
+
+
+# References 
+
+## Methods
+Abbott S, Hellewell J, Sherratt K, Gostic K, Hickson J, Badr H, DeWitt M, Azam J, EpiForecasts, Funk S (2024). EpiNow2: Estimate Real-Time Case Counts and Time-Varying Epidemiological Parameters. R package version 1.5.2, https://epiforecasts.io/EpiNow2/dev/, https://github.com/epiforecasts/EpiNow2, https://epiforecasts.io/EpiNow2/.
+
+Fraser, C. (2007). Estimating individual and household reproduction numbers in an emerging epidemic. PLOS ONE, 2(8), 1–12. https://doi.org/10.1371/journal.pone.0000758
+
+## Public health examples
+
+US CDC mpox: https://www.cdc.gov/poxvirus/mpox/cases-data/technical-report/report-3.html 
+
+# Appendix 
+
+## Methods 
+The estimates are produced using the epinow package. Further information on the methods used are described in https://epiforecasts.io/EpiNow2/. 
