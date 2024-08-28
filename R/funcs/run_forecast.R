@@ -6,6 +6,7 @@
 #' makers and the option to include only a forecast with no nowcast when reporting
 #' delays are not expected or counts are derived from cumulative data with no back-corrections.
 #'
+#' @param data data frame with the observed data for the country or region
 #' @return figures for daily or weekly analysis and a report in Word format
 #' @seealso [Epinow2::epinow()] which this function wraps
 #' @export
