@@ -21,7 +21,7 @@ Imports:
   grid,
   readr
 Remotes: coolbutuseless/ggpattern
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Suggests: 
     knitr,
     rmarkdown
