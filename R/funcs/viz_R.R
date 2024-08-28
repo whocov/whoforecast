@@ -13,7 +13,6 @@
 #'@return Figure showing reported weekly cases epi curve with estimated daily
 #'cases by infection date overlaid
 #'@export
-
 viz_Rt <- function(now_estimates, adm_level){
 
   # Plot cases by reporting figure - note it is

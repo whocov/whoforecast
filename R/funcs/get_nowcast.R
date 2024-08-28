@@ -16,8 +16,6 @@
 #'@param store_model_res if TRUE stores the model results as an rds file. Defaults to FALSE
 #'@import ggplot
 #'@export
-#'
-
 get_nowcast <- function(data_rep,
                         generation_time,
                         incubation_period,
