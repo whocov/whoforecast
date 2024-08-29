@@ -7,7 +7,8 @@ output: word_document
 params:
   data_rep: NULL
   model_ests: NULL
-  adm_level: NULL
+  adm_names: NULL
+  horizon: NULL
 ---
 
 ```{r setup, include=FALSE}
@@ -17,9 +18,10 @@ knitr::opts_chunk$set(echo = FALSE)
 pacman::p_load(tidyverse, here, readxl, lubridate, EpiNow2)
 
 model_ests <- params$model_ests
-adm_level <- params$adm_level
+adm_names <- params$adm_names
 timeseries <- params$data_rep
-  
+horizon <- params$horizon
+
 ```
 
 # Overview 
@@ -44,7 +46,7 @@ Disclaimer: the estimates from both nowcasting and short-term forecasting are ba
 Since `r format(min(timeseries$date), "%d %B %Y")` there have been a total of `r sum(timeseries$confirm)` cases reported. The date of last report is `r format(max(timeseries$date), "%d %B %Y")`. The trend is shown in Figure 1. 
 
 
-```{r, fig.height=3.5, fig.width=6}
+```{r, fig.height=3.5, fig.width=6, fig.cap="Fig 1. Trends in reported cases"}
 
 timeseries %>%
   ggplot(aes(x = date, y = confirm)) +
@@ -64,21 +66,22 @@ timeseries %>%
 The model estimates the effective reproduction number as `r model_ests$summary[3] %>% select(numeric_estimate) %>% unlist() %>% .['numeric_estimate.median']` (`r model_ests$summary[3] %>% select(numeric_estimate) %>% unlist() %>% .['numeric_estimate.lower_50']`, `r model_ests$summary[3] %>% select(numeric_estimate) %>% unlist() %>% .['numeric_estimate.upper_50']`). 
 
 
-```{r, fig.cap = "Estimates of time varying reproduction number"}
+```{r, fig.cap = "Fig 2 Estimates of time varying reproduction number"}
 
-viz_Rt(model_ests, adm0) 
+viz_Rt(model_ests, adm_names) 
 
 ```
 
 ## Reported cases
 
-The number of cases in the next 
+The number of cases in the next `r horizon` days is estimated to be `r model_ests$estimates$summarised %>% filter(variable == "reported_cases") %>% filter(type == "forecast") %>% summarize(sum(median))` (`r model_ests$estimates$summarised %>% filter(variable == "reported_cases") %>% filter(type == "forecast") %>% summarize(sum(lower_50))`, `r model_ests$estimates$summarised %>% filter(variable == "reported_cases") %>% filter(type == "forecast") %>% summarize(sum(upper_50))`). The trend is shown in Figure 3.
 
-```{r, fig.cap = "Estimate reported cases"}
+
+```{r, fig.cap = "Fig 3 Estimated reported cases"}
 
 rep_ests <- model_ests$estimates$summarised %>% filter(variable == "reported_cases") 
 
-viz_reported_week(model_ests, adm0)
+viz_reported_week(model_ests, adm_names)
 
 ```
 

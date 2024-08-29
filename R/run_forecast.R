@@ -46,9 +46,12 @@ run_forecast <- function(data,
                                       date_from = date_from)
 
 
+  adm_names <-  timeseries_nest %>% unnest() %>% .[[paste0(adm_level, "_name")]] %>% .[1]
+
   # Run nowcasting across all nested adm levels - this also saves figures
   # for each adm_level
   results <- timeseries_nest$data  %>% map(., get_nowcast,
+                                           adm_names = adm_names,
                                            generation_time,
                                            incubation_period,
                                            reporting_delay,

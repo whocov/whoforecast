@@ -18,6 +18,7 @@
 #'@import EpiNow2
 #'@export
 get_nowcast <- function(data_rep,
+                        adm_names,
                         generation_time,
                         incubation_period,
                         reporting_delay,
@@ -31,11 +32,9 @@ get_nowcast <- function(data_rep,
                         create_report = TRUE){
 
 
-  iso_3_names <- data_rep %>% unnest() %>% .[["iso_3_code"]] %>% .[1]
+  iso_3_names <- data_rep %>% .[["iso_3_code"]] %>% .[1]
 
-  adm_names <-  data_rep %>% unnest() %>% .[[paste0(adm_level, "_name")]] %>% .[1]
-
-  data_epinow <- data_rep %>% unnest() %>% .[,1:2]
+  data_epinow <- data_rep %>% unnest() %>% select(date, confirm)
 
 
   if(rep_frequency == "daily"){
@@ -81,16 +80,15 @@ get_nowcast <- function(data_rep,
 
     })
 
-print(model_ests)
 
-  model_ests$fig_Rt <- viz_Rt(model_ests, adm_level)
-  model_ests$fig_reported <- viz_reported_week(model_ests, adm_level)
+  model_ests$fig_Rt <- viz_Rt(model_ests, paste(adm_names))
+  model_ests$fig_reported <- viz_reported_week(model_ests, paste(adm_names))
 
 
   if(create_report){
-    rmarkdown::render(
+    model_ests$report <- rmarkdown::render(
       here("R", "report.Rmd"),
-      params = list(model_ests = model_ests, adm_level = adm_level, data_rep = data_rep)
+      params = list(model_ests = model_ests, adm_names = adm_names, data_rep = data_rep, horizon = horizon)
     )
   }
 

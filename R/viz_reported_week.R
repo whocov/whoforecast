@@ -9,7 +9,7 @@
 #'@param now_estimates List of estimates from the nowcasting/forecasting
 #'@param adm_level sets the adm level for which data to pull with options adm0, adm1, adm2
 #'@export
-viz_reported_week <- function(now_estimates, adm_level){
+viz_reported_week <- function(now_estimates, adm_names){
 
   # Post processing
 
@@ -82,7 +82,7 @@ viz_reported_week <- function(now_estimates, adm_level){
     labs(
       x = "Date",
       y = "Cases by date of report",
-      title = paste0(now_estimates %>% .[["estimates"]] %>% .[["observations"]] %>%.[[paste0(adm_level, "_name")]] %>% .[1]),
+      title = adm_names,
       subtitle = paste0("Last reporting on ", format((max(plot_weekly$date[!is.na(plot_weekly$confirm)])+days(3)), "%d %B %Y"))
     ) +
 

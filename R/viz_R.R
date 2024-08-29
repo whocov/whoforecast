@@ -13,7 +13,7 @@
 #'@return Figure showing reported weekly cases epi curve with estimated daily
 #'cases by infection date overlaid
 #'@export
-viz_Rt <- function(now_estimates, adm_level){
+viz_Rt <- function(now_estimates, adm_names){
 
   # Plot cases by reporting figure - note it is
 
@@ -63,7 +63,7 @@ viz_Rt <- function(now_estimates, adm_level){
     labs(
       x = "Date",
       y = "Effective reproduction number",
-      title = paste0(now_estimates %>% .[["estimates"]] %>% .[["observations"]] %>%.[[paste0(adm_level, "_name")]] %>% .[1]),
+      title = paste(adm_names),
       subtitle = paste0("Last reporting on ", format(max(plot_weekly$date[plot_weekly$type == "estimate based on partial data"])+days(3), "%d %B %Y"))
     ) +
     guides(fill = guide_legend(title = ""), colour = guide_legend(title = "")) +
