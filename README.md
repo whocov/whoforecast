@@ -4,7 +4,7 @@ Authors: Martina McMenamin
 
 ## Preamble
 
-This is an experimental package to run nowcasting and forecasting analysis and create a report output. ***Please note that the user of this package is responsible for ensuring that any maps they produce fuffil WHO legal standards.*** 
+This is an experimental package to run nowcasting and forecasting analysis and create a report output. ***Please note that the user of this package is responsible for the outputs and these are not WHO endorsed.*** 
 
 ***THIS APP IS CURRENTLY IN EARLY DEVELOPMENT - PLEASE LOG A GITHUB ISSUE OR CONTACT THE AUTHORS FOR ANY ISSUES***
 
