@@ -10,7 +10,7 @@ This is an experimental package to run nowcasting and forecasting analysis and c
 
 ## Installation
 
-To install this package for the first time: 
+To install this package for the first time run the code below. The package is at the early stages of development so will need to be reinstalled at regular intervals to get the most up to date features.  
 
 ```
 devtools::install_github("whocov/whoforecast", 
