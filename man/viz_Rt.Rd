@@ -4,7 +4,7 @@
 \alias{viz_Rt}
 \title{Vizualise the cases by infection date}
 \usage{
-viz_Rt(now_estimates, adm_level)
+viz_Rt(now_estimates, adm_names)
 }
 \arguments{
 \item{now_estimates}{List of estimates from the nowcasting}

@@ -6,6 +6,7 @@
 \usage{
 get_nowcast(
   data_rep,
+  adm_names,
   generation_time,
   incubation_period,
   reporting_delay,

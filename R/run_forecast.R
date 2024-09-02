@@ -11,6 +11,8 @@
 #' @seealso [Epinow2::epinow()] which this function wraps
 #' @import dplyr
 #' @import tidyverse
+#' @import dplyr
+#' @import tidyr
 #' @export
 run_forecast <- function(data,
                          adm_level = "adm0",
@@ -28,6 +30,10 @@ run_forecast <- function(data,
                          date_var = "date",
                          case_var = "cases"
 ){
+
+  if(horizon > 28){
+    stop("Forecasting period must be less than 28 days")
+  }
 
   # Set date for figures
   date_pipe_run <- Sys.Date()

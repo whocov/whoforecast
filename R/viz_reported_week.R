@@ -82,7 +82,7 @@ viz_reported_week <- function(now_estimates, adm_names){
     labs(
       x = "Date",
       y = "Cases by date of report",
-      title = adm_names,
+      title = paste(adm_names),
       subtitle = paste0("Last reporting on ", format((max(plot_weekly$date[!is.na(plot_weekly$confirm)])+days(3)), "%d %B %Y"))
     ) +
 
