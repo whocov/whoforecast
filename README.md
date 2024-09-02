@@ -6,7 +6,7 @@ Authors: Martina McMenamin
 
 This is an experimental package to run nowcasting and forecasting analysis and create a report output. ***Please note that the user of this package is responsible for the outputs and these are not WHO endorsed.*** 
 
-***THIS APP IS CURRENTLY IN EARLY DEVELOPMENT - PLEASE LOG A GITHUB ISSUE OR CONTACT THE AUTHORS FOR ANY ISSUES. MORE DETAILS ARE IN THE PROCESS OF BEING ADDED TO OUTPUT REPORT.***
+***THIS APP IS CURRENTLY IN EARLY DEVELOPMENT - PLEASE LOG A GITHUB ISSUE OR CONTACT THE AUTHORS FOR ANY ISSUES. ADDITIONAL FUNCTIONALITY FOR SUBNATIONAL ESTIMATES AND MORE DETAILS IN OUTPUT REPORT ARE IN THE PROCESS OF BEING ADDED.***
 
 ## Installation
 
