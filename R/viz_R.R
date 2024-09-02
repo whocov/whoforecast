@@ -13,13 +13,16 @@
 #'@return Figure showing reported weekly cases epi curve with estimated daily
 #'cases by infection date overlaid
 #'@import ggplot2
+#'@import dplyr
 #'@import lubridate
+#'@import tibble
 #'@export
 viz_Rt <- function(now_estimates, adm_names){
 
+  R_estimates <- as_tibble(now_estimates$estimates$summarised) %>% filter(variable == "R")
   # Plot cases by reporting figure - note it is
 
-  plot_weekly <- now_estimates$estimates$summarised[variable == "R"] %>%
+  plot_weekly <- R_estimates %>%
     mutate(
       partial = ifelse(type == "estimate based on partial data", 1, 0),
       partial = ifelse(lead(partial) == 1, 1, partial),
