@@ -11,7 +11,6 @@
 #' @seealso [Epinow2::epinow()] which this function wraps
 #' @import dplyr
 #' @import tidyverse
-#' @import dplyr
 #' @import tidyr
 #' @import purrr
 #' @export

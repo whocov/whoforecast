@@ -15,7 +15,10 @@
 #'@param date_from the start date from which to fit the model
 #'@param store_model_res if TRUE stores the model results as an rds file. Defaults to FALSE
 #'@import ggplot2
+#'@import dplyr
+#'@import rmarkdown
 #'@import EpiNow2
+#'@import tidyr
 #'@export
 get_nowcast <- function(data_rep,
                         adm_names,
