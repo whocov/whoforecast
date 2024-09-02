@@ -9,7 +9,7 @@ viz_reported_week(now_estimates, adm_names)
 \arguments{
 \item{now_estimates}{List of estimates from the nowcasting/forecasting}
 
-\item{adm_level}{sets the adm level for which data to pull with options adm0, adm1, adm2}
+\item{adm_level}{sets the adm level for which data to pull with options adm0, adm1}
 }
 \description{
 Visualise the reported and estimated reported cases by date of report
