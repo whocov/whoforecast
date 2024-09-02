@@ -12,7 +12,7 @@
 #'@return tibble nested by specified adm_level
 #'@import dplyr
 #'@import tidyr
-#'@import chron
+#'@import lubridate
 #'@export
 data_pre_process <- function(timeseries,
                              adm_level = "adm0",
