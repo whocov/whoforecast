@@ -19,7 +19,11 @@ Imports:
   png,
   ggnewscale,
   grid,
-  readr
+  readr,
+  lubridate,
+  purrr, 
+  rmarkdown,
+  tidyverse
 Remotes: coolbutuseless/ggpattern
 RoxygenNote: 7.3.2
 Suggests: 
