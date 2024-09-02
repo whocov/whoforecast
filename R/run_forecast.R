@@ -13,6 +13,7 @@
 #' @import tidyverse
 #' @import dplyr
 #' @import tidyr
+#' @import purrr
 #' @export
 run_forecast <- function(data,
                          adm_level = "adm0",
