@@ -85,8 +85,6 @@ get_nowcast <- function(data_rep,
 
     })
 
-  print(model_ests)
-
   model_ests$fig_Rt <- viz_Rt(model_ests, paste(adm_names))
   model_ests$fig_reported <- viz_reported_week(model_ests, paste(adm_names))
 
@@ -94,11 +92,21 @@ get_nowcast <- function(data_rep,
 
     report_path <- system.file("reports/report.Rmd", package = "whoforecast")
 
-    model_ests$report <- rmarkdown::render(
+    output_file <- rmarkdown::render(
       report_path,
       params = list(model_ests = model_ests, adm_names = adm_names, data_rep = data_rep, horizon = horizon)
     )
+
+    # Automatically open the rendered document
+    if (.Platform$OS.type == "windows") {
+      system2("open", output_file)
+    } else if (Sys.info()["sysname"] == "Darwin") {
+      system2("open", output_file)
+    } else if (.Platform$OS.type == "unix") {
+      system2("xdg-open", output_file)
+    }
   }
+
 
   return(model_ests)
 
