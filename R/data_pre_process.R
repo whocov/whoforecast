@@ -10,6 +10,8 @@
 #'adm0, adm1, adm2
 #'@param date_from date from which to start the analysis
 #'@return tibble nested by specified adm_level
+#'@import dplyr
+#'@import tidyr
 #'@export
 data_pre_process <- function(timeseries,
                              adm_level = "adm0",
