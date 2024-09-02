@@ -65,7 +65,9 @@ run_forecast(
 
 The analysis will output a list with the following elements of interest:
 
+* Model estimates 
 * Figure of estimates for effective reproduction number (Rt) over time
 * Figure of estimates for the number of reported cases over time
-* Word document with the analysis output and interpretation
+
+If ```create_report = TRUE``` a Word document with the analysis output and interpretation will be created and will open automatically when the analysis has finished running. Note if you wish to run the analysis again **you must close the Word document - otherwise an error will be shown**. 
 
