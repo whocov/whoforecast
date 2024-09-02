@@ -92,7 +92,7 @@ get_nowcast <- function(data_rep,
 
   if(create_report){
     model_ests$report <- rmarkdown::render(
-      here("report.Rmd"),
+      "report.Rmd",
       params = list(model_ests = model_ests, adm_names = adm_names, data_rep = data_rep, horizon = horizon)
     )
   }
