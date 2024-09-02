@@ -6,7 +6,7 @@ Authors: Martina McMenamin
 
 This is an experimental package to run nowcasting and forecasting analysis and create a report output. ***Please note that the user of this package is responsible for the outputs and these are not WHO endorsed.*** 
 
-***THIS APP IS CURRENTLY IN EARLY DEVELOPMENT - PLEASE LOG A GITHUB ISSUE OR CONTACT THE AUTHORS FOR ANY ISSUES***
+***THIS APP IS CURRENTLY IN EARLY DEVELOPMENT - PLEASE LOG A GITHUB ISSUE OR CONTACT THE AUTHORS FOR ANY ISSUES. MORE DETAILS ARE IN THE PROCESS OF BEING ADDED TO OUTPUT REPORT.***
 
 ## Installation
 
@@ -60,6 +60,7 @@ run_forecast(
     )
 ```
 
+This will run the national level analysis and output both nowcasted and forecasted estimates, with forecast period according to horizon. If a subnational level analysis is run, change ```adm_level = "adm1"```.
 
 ## Analysis output
 
