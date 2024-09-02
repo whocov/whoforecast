@@ -68,6 +68,7 @@ The model estimates the effective reproduction number as `r model_ests$summary[3
 
 ```{r, fig.cap = "Fig 2 Estimates of time varying reproduction number"}
 
+viz_Rt(model_ests, adm_names)
 
 ```
 
@@ -80,6 +81,7 @@ The number of cases in the next `r horizon` days is estimated to be `r model_est
 
 rep_ests <- model_ests$estimates$summarised %>% filter(variable == "reported_cases") 
 
+viz_reported_week(model_ests, adm_names)
 
 ```
 

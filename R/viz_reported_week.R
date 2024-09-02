@@ -10,6 +10,7 @@
 #'@param adm_level sets the adm level for which data to pull with options adm0, adm1
 #'@import ggplot2
 #'@import lubridate
+#'@import tibble
 #'@export
 viz_reported_week <- function(now_estimates, adm_names){
 
@@ -26,9 +27,11 @@ viz_reported_week <- function(now_estimates, adm_names){
   # Generate weekly level reported case estimates by date of report
   # and combine with observations
 
+  rep_estimates <- as_tibble(now_estimates$estimates$summarised) %>% filter(variable == "reported_cases")
+
   plot_weekly <- now_estimates$estimated_reported_cases$summarised %>%
     rename(type_var = type) %>% # rename to keep other type variable which we want
-    left_join(., now_estimates$estimates$summarised[variable == "reported_cases"]) %>%
+    left_join(., rep_estimates) %>%
     mutate(
       year = year(date),
       month = month(date),
