@@ -27,6 +27,7 @@ viz_Rt <- function(now_estimates, adm_names){
       forecast =  ifelse(lag(forecast) == 1 | lead(forecast) == 1, 1, forecast),
     )
 
+  print(plot_weekly)
 
   inf_week_fig <-
     ggplot(data = plot_weekly, aes(x = date)) +
