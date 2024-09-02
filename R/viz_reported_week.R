@@ -9,6 +9,7 @@
 #'@param now_estimates List of estimates from the nowcasting/forecasting
 #'@param adm_level sets the adm level for which data to pull with options adm0, adm1
 #'@import ggplot2
+#'@import chron
 #'@export
 viz_reported_week <- function(now_estimates, adm_names){
 

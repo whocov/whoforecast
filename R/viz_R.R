@@ -13,6 +13,7 @@
 #'@return Figure showing reported weekly cases epi curve with estimated daily
 #'cases by infection date overlaid
 #'@import ggplot2
+#'@import chron
 #'@export
 viz_Rt <- function(now_estimates, adm_names){
 
