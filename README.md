@@ -40,7 +40,7 @@ To run the analysis, you will need to follow the steps below:
 library(whoforecast)
 
 # Load the data 
-test_data <- read_csv("/your_path/example_data.csv") 
+test_data <- read_excel::read_csv("/your_path/example_data.csv") 
 
 # Run the analysis - edit the function arguments as needed
 run_forecast(
