@@ -19,6 +19,7 @@
 #'@import rmarkdown
 #'@import EpiNow2
 #'@import tidyr
+#'@import chron
 #'@export
 get_nowcast <- function(data_rep,
                         adm_names,
