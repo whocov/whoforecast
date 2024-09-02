@@ -92,7 +92,7 @@ get_nowcast <- function(data_rep,
 
   if(create_report){
 
-    report_path <- system.file("R/report.Rmd", package = "whoforecast")
+    report_path <- system.file("report/report.Rmd", package = "whoforecast")
 
     model_ests$report <- rmarkdown::render(
       report_path,
