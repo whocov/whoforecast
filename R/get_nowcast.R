@@ -20,6 +20,7 @@
 #'@import EpiNow2
 #'@import tidyr
 #'@import lubridate
+#'@import here
 #'@export
 get_nowcast <- function(data_rep,
                         adm_names,
@@ -86,6 +87,8 @@ get_nowcast <- function(data_rep,
 
   print(model_ests)
 
+  # model_ests$fig_Rt <- viz_Rt(model_ests, paste(adm_names))
+  #model_ests$fig_reported <- viz_reported_week(model_ests, paste(adm_names))
 
   if(create_report){
     model_ests$report <- rmarkdown::render(
