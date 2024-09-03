@@ -75,4 +75,5 @@ If ```create_report = TRUE``` a Word document with the analysis output and inter
 ## Disclaimer 
 * If nowcasting is included, the accuracy of this will depend on modifying the input reporting delay distribution estimated from timestamped datasets
 * The forecasts do not account for interventions or changes in other factors during this period
+* Development of report is ongoing to include presentation of lower admin levels 
 
