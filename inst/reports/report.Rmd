@@ -60,7 +60,7 @@ timeseries %>%
 
 ## Effective reproduction number 
 
-The model estimates the effective reproduction number as `r model_ests$summary[3] %>% select(numeric_estimate) %>% unlist() %>% .['numeric_estimate.median']/100` (`r model_ests$summary[3] %>% select(numeric_estimate) %>% unlist() %>% .['numeric_estimate.lower_50']/100`, `r model_ests$summary[3] %>% select(numeric_estimate) %>% unlist() %>% .['numeric_estimate.upper_50']/100`). 
+The model estimates the effective reproduction number as `r model_ests$summary %>% filter(measure == "Effective reproduction no.") %>% select(numeric_estimate) %>% unlist() %>% .['numeric_estimate.median']` (`r model_ests$summary %>% filter(measure == "Effective reproduction no.") %>% select(numeric_estimate) %>% unlist() %>% .['numeric_estimate.lower_50']`, `r model_ests$summary %>% filter(measure == "Effective reproduction no.") %>% select(numeric_estimate) %>% unlist() %>% .['numeric_estimate.upper_50']`). 
 
 
 ```{r, fig.cap = "Fig 2 Estimates of time varying reproduction number", fig.height=4, fig.width=6}
@@ -71,7 +71,7 @@ viz_Rt(model_ests, adm_names)
 
 ## Reported cases
 
-The number of cases in the next `r horizon` days is estimated to be `r model_ests$estimates$summarised %>% filter(variable == "reported_cases") %>% filter(type == "forecast") %>% summarize(sum(median))` (`r model_ests$estimates$summarised %>% filter(variable == "reported_cases") %>% filter(type == "forecast") %>% summarize(sum(lower_50))`, `r model_ests$estimates$summarised %>% filter(variable == "reported_cases") %>% filter(type == "forecast") %>% summarize(sum(upper_50))`). The trend is shown in Figure 3.
+The number of cases in the next `r horizon` days is estimated to be `r round(model_ests$estimates$summarised %>% filter(variable == "reported_cases") %>% filter(type == "forecast") %>% summarize(sum(median)))` (`r round(model_ests$estimates$summarised %>% filter(variable == "reported_cases") %>% filter(type == "forecast") %>% summarize(sum(lower_50)))`, `r round(model_ests$estimates$summarised %>% filter(variable == "reported_cases") %>% filter(type == "forecast") %>% summarize(sum(upper_50)))`). The trend is shown in Figure 3.
 
 
 ```{r, fig.cap = "Fig 3 Estimated reported cases", fig.height=4, fig.width=6}
