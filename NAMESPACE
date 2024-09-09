@@ -2,6 +2,7 @@
 
 export(data_pre_process)
 export(get_gen_time)
+export(get_inc_period)
 export(get_nowcast)
 export(get_timeseries)
 export(run_forecast)

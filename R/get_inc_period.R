@@ -17,6 +17,8 @@
 #'
 #'@return list including the mean, sd and distribution type for the incubation period
 #'
+#'@export
+#'
 get_inc_period <- function(mean = 1.5,
                            sd = 0.3,
                            dist = "lognormal",
