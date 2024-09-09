@@ -24,14 +24,11 @@ horizon <- params$horizon
 
 ```
 
-# Overview 
-
 # Background
 
 ## Nowcasting
 Often when collecting epidemiological data in an outbreak situation, there are limitations 
-in the data collected and interpretation in real-time is challenging. This can be due to reporting delays, where cases in the current or recent weeks have not yet been fully reported due to
-logistical challenges in the field, limited laboratory capacity or other factors. 
+in the data collected and interpretation in real-time is challenging. This can be due to reporting delays, where cases in the current or recent weeks have not yet been fully reported due to logistical challenges in the field, limited laboratory capacity or other factors. 
 
 The purpose of nowcasting is to estimate case counts, growth rate, and doubling time in the recent period where reporting delays apply to give a more clear picture of current burden. Furthermore, by estimating the growth rate current trends can be determined, which may otherwise be challenging due to noise and reporting irregularities in the data. 
 
@@ -54,7 +51,7 @@ timeseries %>%
   labs(title = "Case counts",
        x = "Date",
        y = "Cases") +
-  scale_x_date(date_breaks = "1 month", date_minor_breaks = "1 week", date_labels = "%d %b \n%Y") +
+  scale_x_date(date_breaks = "1 week", date_minor_breaks = "1 week", date_labels = "%d %b \n%Y") +
   whotools::theme_who()
 
 ```
@@ -63,10 +60,10 @@ timeseries %>%
 
 ## Effective reproduction number 
 
-The model estimates the effective reproduction number as `r model_ests$summary[3] %>% select(numeric_estimate) %>% unlist() %>% .['numeric_estimate.median']` (`r model_ests$summary[3] %>% select(numeric_estimate) %>% unlist() %>% .['numeric_estimate.lower_50']`, `r model_ests$summary[3] %>% select(numeric_estimate) %>% unlist() %>% .['numeric_estimate.upper_50']`). 
+The model estimates the effective reproduction number as `r model_ests$summary[3] %>% select(numeric_estimate) %>% unlist() %>% .['numeric_estimate.median']/100` (`r model_ests$summary[3] %>% select(numeric_estimate) %>% unlist() %>% .['numeric_estimate.lower_50']/100`, `r model_ests$summary[3] %>% select(numeric_estimate) %>% unlist() %>% .['numeric_estimate.upper_50']/100`). 
 
 
-```{r, fig.cap = "Fig 2 Estimates of time varying reproduction number"}
+```{r, fig.cap = "Fig 2 Estimates of time varying reproduction number", fig.height=3.5, fig.width=6}
 
 viz_Rt(model_ests, adm_names)
 
@@ -77,7 +74,7 @@ viz_Rt(model_ests, adm_names)
 The number of cases in the next `r horizon` days is estimated to be `r model_ests$estimates$summarised %>% filter(variable == "reported_cases") %>% filter(type == "forecast") %>% summarize(sum(median))` (`r model_ests$estimates$summarised %>% filter(variable == "reported_cases") %>% filter(type == "forecast") %>% summarize(sum(lower_50))`, `r model_ests$estimates$summarised %>% filter(variable == "reported_cases") %>% filter(type == "forecast") %>% summarize(sum(upper_50))`). The trend is shown in Figure 3.
 
 
-```{r, fig.cap = "Fig 3 Estimated reported cases"}
+```{r, fig.cap = "Fig 3 Estimated reported cases", fig.height=3.5, fig.width=6}
 
 rep_ests <- model_ests$estimates$summarised %>% filter(variable == "reported_cases") 
 

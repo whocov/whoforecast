@@ -85,6 +85,13 @@ get_nowcast <- function(data_rep,
 
     })
 
+  if(is.null(model_ests)){
+
+    stop("Error: Model not fit. Check input parameters")
+
+  }
+
+
   model_ests$fig_Rt <- viz_Rt(model_ests, paste(adm_names))
   model_ests$fig_reported <- viz_reported_week(model_ests, paste(adm_names))
 
