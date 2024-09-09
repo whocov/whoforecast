@@ -17,7 +17,7 @@
 #' @export
 run_forecast <- function(data,
                          adm_level = "adm0",
-                         rep_freq = "weekly",
+                         rep_frequency = "weekly",
                          nowcast = FALSE,
                          generation_time = get_gen_time(),
                          incubation_period = get_inc_period(),
