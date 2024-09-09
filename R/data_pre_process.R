@@ -20,7 +20,10 @@ data_pre_process <- function(timeseries,
 
   data_prep <-
     timeseries %>%
-      complete(date = seq.Date(min(timeseries$date), max(timeseries$date), by = "day")) %>%
+      complete(date = seq.Date(min(timeseries$date, na.rm = TRUE),
+                               max(timeseries$date), na.rm = TRUE,
+                               by = "day")
+               ) %>%
       replace_na(list(confirm = 0)) %>%
       fill(adm0_name, .direction = "down") %>%
       fill(iso_3_code, .direction = "up") %>%
