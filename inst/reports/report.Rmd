@@ -43,7 +43,7 @@ Disclaimer: the estimates from both nowcasting and short-term forecasting are ba
 Since `r format(min(timeseries$date), "%d %B %Y")` there have been a total of `r sum(timeseries$confirm)` cases reported. The date of last report is `r format(max(timeseries$date), "%d %B %Y")`. The trend is shown in Figure 1. 
 
 
-```{r, fig.height=4, fig.width=6, fig.cap="Fig 1. Trends in reported cases"}
+```{r, fig.height=3.5, fig.width=6, fig.cap="Fig 1. Trends in reported cases"}
 
 timeseries %>%
   ggplot(aes(x = date, y = confirm)) +
@@ -74,7 +74,7 @@ viz_Rt(model_ests, adm_names)
 The number of cases in the next `r horizon` days is estimated to be `r model_ests$estimates$summarised %>% filter(variable == "reported_cases") %>% filter(type == "forecast") %>% summarize(sum(median))` (`r model_ests$estimates$summarised %>% filter(variable == "reported_cases") %>% filter(type == "forecast") %>% summarize(sum(lower_50))`, `r model_ests$estimates$summarised %>% filter(variable == "reported_cases") %>% filter(type == "forecast") %>% summarize(sum(upper_50))`). The trend is shown in Figure 3.
 
 
-```{r, fig.cap = "Fig 3 Estimated reported cases", fig.height=3.5, fig.width=6}
+```{r, fig.cap = "Fig 3 Estimated reported cases", fig.height=4, fig.width=6}
 
 rep_ests <- model_ests$estimates$summarised %>% filter(variable == "reported_cases") 
 
