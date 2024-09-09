@@ -43,7 +43,7 @@ Disclaimer: the estimates from both nowcasting and short-term forecasting are ba
 Since `r format(min(timeseries$date), "%d %B %Y")` there have been a total of `r sum(timeseries$confirm)` cases reported. The date of last report is `r format(max(timeseries$date), "%d %B %Y")`. The trend is shown in Figure 1. 
 
 
-```{r, fig.height=3.5, fig.width=6, fig.cap="Fig 1. Trends in reported cases"}
+```{r, fig.height=4, fig.width=6, fig.cap="Fig 1. Trends in reported cases"}
 
 timeseries %>%
   ggplot(aes(x = date, y = confirm)) +
@@ -63,7 +63,7 @@ timeseries %>%
 The model estimates the effective reproduction number as `r model_ests$summary[3] %>% select(numeric_estimate) %>% unlist() %>% .['numeric_estimate.median']/100` (`r model_ests$summary[3] %>% select(numeric_estimate) %>% unlist() %>% .['numeric_estimate.lower_50']/100`, `r model_ests$summary[3] %>% select(numeric_estimate) %>% unlist() %>% .['numeric_estimate.upper_50']/100`). 
 
 
-```{r, fig.cap = "Fig 2 Estimates of time varying reproduction number", fig.height=3.5, fig.width=6}
+```{r, fig.cap = "Fig 2 Estimates of time varying reproduction number", fig.height=4, fig.width=6}
 
 viz_Rt(model_ests, adm_names)
 
