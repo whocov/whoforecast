@@ -18,23 +18,13 @@ data_pre_process <- function(timeseries,
                              adm_level = "adm0",
                              date_from = min(timeseries$date)){
 
-  data_prep <-
-    timeseries %>%
-      complete(date = seq.Date(min(timeseries$date, na.rm = TRUE),
-                               max(timeseries$date), na.rm = TRUE,
-                               by = "day")
-               ) %>%
-      replace_na(list(confirm = 0)) %>%
-      fill(adm0_name, .direction = "down") %>%
-      fill(iso_3_code, .direction = "up") %>%
-      filter(date >= date_from) %>%
-      left_join(timeseries) %>%
-      mutate(date = as.Date(date, format = "%Y-%m-%d")) %>%
-      filter(date > date_from) %>%
-      select(paste0(adm_level, "_name"), date, confirm, iso_3_code) %>%
-      mutate(date = date + days(3)) %>%
-      group_by_at(paste0(adm_level, "_name")) %>%
-      nest()
+  data_prep  <- timeseries %>%
+    mutate(date = as.Date(date, format = "%Y-%m-%d")) %>%
+    filter(date > date_from) %>%
+    select(paste0(adm_level, "_name"), date, confirm, iso_3_code) %>%
+    mutate(date = date + days(3)) %>%
+    group_by_at(paste0(adm_level, "_name")) %>%
+    nest()
 
   return(data_prep)
 
