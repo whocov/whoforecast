@@ -17,7 +17,7 @@
 #' @export
 run_forecast <- function(data,
                          adm_level = "adm0",
-                         rep_frequency = "weekly",
+                         reporting_freq = "weekly",
                          nowcast = FALSE,
                          generation_time = get_gen_time(),
                          incubation_period = get_inc_period(),
@@ -26,8 +26,6 @@ run_forecast <- function(data,
                          horizon = 7,
                          create_report = TRUE,
                          date_from = min(data$date),
-                         output_dir = here("outputs"),
-                         store_model_res = FALSE,
                          date_var = "date",
                          case_var = "cases"
 ){
@@ -58,14 +56,17 @@ run_forecast <- function(data,
   # Run nowcasting across all nested adm levels - this also saves figures
   # for each adm_level
   results <- timeseries_nest$data  %>% map(., get_nowcast,
-                                           adm_names = adm_names,
-                                           generation_time,
-                                           incubation_period,
-                                           reporting_delay,
-                                           adm_level = adm_level,
-                                           horizon = horizon,
-                                           date_from,
-                                           create_report = create_report)
+                                              adm_names,
+                                              generation_time,
+                                              incubation_period,
+                                              reporting_delay,
+                                              horizon,
+                                              nowcast,
+                                              reporting_freq,
+                                              adm_level,
+                                              date_from,
+                                              create_report)
+
 
   return(results)
 

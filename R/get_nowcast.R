@@ -29,28 +29,28 @@ get_nowcast <- function(data_rep,
                         reporting_delay,
                         horizon,
                         nowcast = FALSE,
-                        rep_frequency = "weekly",
+                        reporting_freq = "weekly",
                         adm_level = adm_level,
-                        output_dir = here("outputs"),
                         date_from = min(data_rep$date),
-                        store_model_res = FALSE,
                         create_report = TRUE){
 
+
+  dates_obs <- data_rep %>% unnest() %>% pull(date)
 
   iso_3_names <- data_rep %>% .[["iso_3_code"]] %>% .[1]
 
   data_epinow <- data_rep %>% unnest() %>% select(date, confirm)
 
 
-  if(rep_frequency == "daily"){
+  if(reporting_freq == "daily"){
 
     week_effect <- FALSE
-    rt_estor <- rt_opts()
+    rt_estor <- rt_opts(pop = 1000000, future = "latest")
 
-    } else if(rep_frequency == "weekly"){
+    } else if(reporting_freq == "weekly"){
 
       week_effect <- TRUE
-      rt_estor <- rt_opts(prior = list(mean = 2, sd = 0.2), rw = 7)
+      rt_estor <- rt_opts(prior = list(mean = 2, sd = 0.2), rw = 7, pop = 1000000, future = "latest")
 
       } else {
        message("Reporting frequency not recognised. Please specify 'daily' or 'weekly'")
@@ -91,6 +91,14 @@ get_nowcast <- function(data_rep,
 
   }
 
+
+  #ad hoc temporary fix for the problem with the weekly estimator
+  if(reporting_freq == "weekly"){
+
+    model_ests$estimates$summarised <-
+      model_ests$estimates$summarised %>% filter(date %in% dates_obs | type == "forecast")
+
+  }
 
   model_ests$fig_Rt <- viz_Rt(model_ests, paste(adm_names))
   model_ests$fig_reported <- viz_reported_week(model_ests, paste(adm_names))
