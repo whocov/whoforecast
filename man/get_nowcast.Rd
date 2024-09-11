@@ -12,11 +12,9 @@ get_nowcast(
   reporting_delay,
   horizon,
   nowcast = FALSE,
-  rep_frequency = "weekly",
+  reporting_freq = "weekly",
   adm_level = adm_level,
-  output_dir = here("outputs"),
   date_from = min(data_rep$date),
-  store_model_res = FALSE,
   create_report = TRUE
 )
 }
@@ -34,9 +32,9 @@ nowcast is not performed and only forecast is returned}
 
 \item{adm_level}{the adm level for which the analysis is performed}
 
-\item{output_dir}{the directory to store the figures and results}
-
 \item{date_from}{the start date from which to fit the model}
+
+\item{output_dir}{the directory to store the figures and results}
 
 \item{store_model_res}{if TRUE stores the model results as an rds file. Defaults to FALSE}
 }

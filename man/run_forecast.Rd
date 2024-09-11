@@ -7,7 +7,7 @@
 run_forecast(
   data,
   adm_level = "adm0",
-  rep_freq = "weekly",
+  reporting_freq = "weekly",
   nowcast = FALSE,
   generation_time = get_gen_time(),
   incubation_period = get_inc_period(),
@@ -16,8 +16,6 @@ run_forecast(
   horizon = 7,
   create_report = TRUE,
   date_from = min(data$date),
-  output_dir = here("outputs"),
-  store_model_res = FALSE,
   date_var = "date",
   case_var = "cases"
 )

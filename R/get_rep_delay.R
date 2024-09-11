@@ -15,7 +15,7 @@
 #'@param distribution the probability distribution used. Defaults to lognormal.
 #'
 #'@return list including the mean, sd and distribution type for the reporting delay distribution
-#'
+#'@export
 get_rep_delay <- function(mean = 2,
                           sd = 1,
                           dist = "lognormal",

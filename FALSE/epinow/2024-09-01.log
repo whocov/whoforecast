@@ -1,0 +1,3 @@
+WARN [2024-09-11 10:01:48] epinow: cannot open file 'C:\Users\MCMENA~1\AppData\Local\Temp\Rtmp4C3V73/epinow/2024-09-04.log': No such file or directory - file, file, ifelse(append, "a", "w")
+DEBUG [2024-09-11 10:02:39] Producing following optional outputs: samples, plots, latest, fit, timing
+WARN [2024-09-11 10:02:39] epinow: cannot open file 'C:\Users\MCMENA~1\AppData\Local\Temp\Rtmp4C3V73/epinow/2024-09-04.log': No such file or directory - file, file, ifelse(append, "a", "w")
