@@ -36,6 +36,7 @@ get_nowcast <- function(data_rep,
 
 
   dates_obs <- data_rep %>% unnest() %>% pull(date)
+  print(dates_obs)
 
   iso_3_names <- data_rep %>% .[["iso_3_code"]] %>% .[1]
 
@@ -73,7 +74,7 @@ get_nowcast <- function(data_rep,
     generation_time = generation_time_opts(generation_time),
     delays = delays,
     rt = rt_estor,
-    obs = obs_opts(week_effect = week_effect),
+    obs = obs_opts(week_effect = week_effect, na = "accumulate"),
     gp = NULL,
     horizon = horizon,
     stan = stan_opts(cores = 4, warmup = 250, samples = 1000))
@@ -88,15 +89,6 @@ get_nowcast <- function(data_rep,
   if(is.null(model_ests)){
 
     stop("Error: Model not fit. Check input parameters")
-
-  }
-
-
-  #ad hoc temporary fix for the problem with the weekly estimator
-  if(reporting_freq == "weekly"){
-
-    model_ests$estimates$summarised <-
-      model_ests$estimates$summarised %>% filter(date %in% dates_obs | type == "forecast")
 
   }
 

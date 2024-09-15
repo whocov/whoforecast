@@ -48,7 +48,6 @@ viz_reported_week <- function(now_estimates, adm_names){
       forecast =  ifelse(lag(forecast) == 1 | lead(forecast) == 1, 1, forecast),
     )
 
-
   # Plot cases by reporting figure - need to clean and reduce this
 
   rep_week_fig <-
