@@ -9,6 +9,7 @@ params:
   model_ests: NULL
   adm_names: NULL
   horizon: NULL
+  reporting_freq: NULL
 ---
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
@@ -78,7 +79,7 @@ The number of cases in the next `r horizon` days is estimated to be `r round(mod
 
 rep_ests <- model_ests$estimates$summarised %>% filter(variable == "reported_cases") 
 
-viz_reported_week(model_ests, adm_names)
+viz_reported_week(model_ests, adm_names, reporting_freq)
 
 ```
 

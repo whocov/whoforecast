@@ -12,11 +12,10 @@
 #'@import lubridate
 #'@import tibble
 #'@export
-viz_reported_week <- function(now_estimates, adm_names){
+viz_reported_week <- function(now_estimates, adm_names, reporting_freq){
 
-  # Post processing
+  # observations
 
-  # Generate week variable for matching - may not be needed but leave here for now
   plot_weekly_obs <- now_estimates$estimates$observations %>%
     mutate(
       year = year(date),
@@ -29,19 +28,30 @@ viz_reported_week <- function(now_estimates, adm_names){
 
   rep_estimates <- as_tibble(now_estimates$estimates$summarised) %>% filter(variable == "reported_cases")
 
-  plot_weekly <- now_estimates$estimated_reported_cases$summarised %>%
-    rename(type_var = type) %>% # rename to keep other type variable which we want
-    left_join(., rep_estimates) %>%
+  if(reporting_freq == "weekly") {
+
+    rep_estimates <- rep_estimates %>%
+      mutate(date = floor_date(date, "week") + days(3)) %>%
+      group_by(date, type) %>%
+      summarise(
+        median = median(median),
+        lower_20 = median(lower_20),
+        upper_20 = median(upper_20),
+        lower_50 = median(lower_50),
+        upper_50 = median(upper_50),
+        lower_90 = median(lower_90),
+        upper_90 = median(upper_90)
+      )
+
+  }
+
+  plot_weekly <- rep_estimates %>%
     mutate(
       year = year(date),
       month = month(date),
-      week = week(date + days(3)),
-      week_obs = week(date)
+      week = week(date + days(3))
     ) %>%
-    #group_by(week) %>%
-    #filter(median != 0) %>%
-    full_join(., plot_weekly_obs) %>%
-    as.data.frame(.) %>%
+    left_join(plot_weekly_obs, by = c("year", "week")) %>%
     mutate(
       partial = ifelse(type == "estimate based on partial data", 1, 0),
       partial = ifelse(lead(partial) == 1, 1, partial),

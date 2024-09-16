@@ -57,7 +57,7 @@ get_nowcast <- function(data_rep,
        message("Reporting frequency not recognised. Please specify 'daily' or 'weekly'")
      }
 
-  if(nowcast == TRUE){
+  if(!is.null(reporting_delay)){
 
      delays <- delay_opts(incubation_period, reporting_delay)
 
@@ -93,7 +93,7 @@ get_nowcast <- function(data_rep,
   }
 
   model_ests$fig_Rt <- viz_Rt(model_ests, paste(adm_names))
-  model_ests$fig_reported <- viz_reported_week(model_ests, paste(adm_names))
+  model_ests$fig_reported <- viz_reported_week(model_ests, paste(adm_names), reporting_freq)
 
   if(create_report){
 
@@ -101,7 +101,11 @@ get_nowcast <- function(data_rep,
 
     output_file <- rmarkdown::render(
       report_path,
-      params = list(model_ests = model_ests, adm_names = adm_names, data_rep = data_rep, horizon = horizon)
+      params = list(model_ests = model_ests,
+                    adm_names = adm_names,
+                    data_rep = data_rep,
+                    horizon = horizon,
+                    reporting_freq = reporting_freq)
     )
 
     # Automatically open the rendered document
