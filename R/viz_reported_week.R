@@ -34,14 +34,13 @@ viz_reported_week <- function(now_estimates, adm_names, reporting_freq){
       mutate(date = floor_date(date, "week") + days(3)) %>%
       group_by(date, type) %>%
       summarise(
-        median = median(median),
-        lower_20 = median(lower_20),
-        upper_20 = median(upper_20),
-        lower_50 = median(lower_50),
-        upper_50 = median(upper_50),
-        lower_90 = median(lower_90),
-        upper_90 = median(upper_90)
-      )
+        median = sum(median, na.rm = TRUE),
+        lower_20 = sum(lower_20, na.rm = TRUE),
+        upper_20 = sum(upper_20, na.rm = TRUE),
+        lower_50 = sum(lower_50, na.rm = TRUE),
+        upper_50 = sum(upper_50, na.rm = TRUE),
+        lower_90 = sum(lower_90, na.rm = TRUE),
+        upper_90 = sum(upper_90, na.rm = TRUE))
 
   }
 
@@ -51,12 +50,12 @@ viz_reported_week <- function(now_estimates, adm_names, reporting_freq){
       month = month(date),
       week = week(date + days(3))
     ) %>%
-    left_join(plot_weekly_obs, by = c("year", "week")) %>%
+    left_join(plot_weekly_obs) %>%
     mutate(
       partial = ifelse(type == "estimate based on partial data", 1, 0),
-      partial = ifelse(lead(partial) == 1, 1, partial),
+     # partial = ifelse(lead(partial) == 1, 1, partial),
       forecast =  ifelse(type == "forecast", 1, 0),
-      forecast =  ifelse(lag(forecast) == 1 | lead(forecast) == 1, 1, forecast),
+  #    forecast =  ifelse(lag(forecast) == 1 | lead(forecast) == 1, 1, forecast),
     )
 
   print(plot_weekly)
