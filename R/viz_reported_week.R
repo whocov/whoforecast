@@ -35,10 +35,11 @@ viz_reported_week <- function(now_estimates, adm_names){
     mutate(
       year = year(date),
       month = month(date),
-      week = week(date + days(3))
+      week = week(date + days(3)),
+      week_obs = week(date)
     ) %>%
     #group_by(week) %>%
-    filter(median != 0) %>%
+    #filter(median != 0) %>%
     full_join(., plot_weekly_obs) %>%
     as.data.frame(.) %>%
     mutate(
@@ -48,6 +49,7 @@ viz_reported_week <- function(now_estimates, adm_names){
       forecast =  ifelse(lag(forecast) == 1 | lead(forecast) == 1, 1, forecast),
     )
 
+  print(plot_weekly)
   # Plot cases by reporting figure - need to clean and reduce this
 
   rep_week_fig <-
