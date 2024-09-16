@@ -22,6 +22,7 @@ model_ests <- params$model_ests
 adm_names <- params$adm_names
 timeseries <- params$data_rep
 horizon <- params$horizon
+reporting_freq <- params$reporting_freq
 
 ```
 
