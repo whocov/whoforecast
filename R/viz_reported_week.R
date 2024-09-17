@@ -14,8 +14,6 @@
 #'@export
 viz_reported_week <- function(now_estimates, adm_names, reporting_freq){
 
-  # observations
-
   plot_weekly_obs <- now_estimates$estimates$observations %>%
     mutate(
       year = year(date),
@@ -26,40 +24,22 @@ viz_reported_week <- function(now_estimates, adm_names, reporting_freq){
   # Generate weekly level reported case estimates by date of report
   # and combine with observations
 
-  rep_estimates <- as_tibble(now_estimates$estimates$summarised) %>% filter(variable == "reported_cases")
-
-  if(reporting_freq == "weekly") {
-
-    rep_estimates <- rep_estimates %>%
-      mutate(date = floor_date(date, "week") + days(3)) %>%
-      group_by(date, type) %>%
-      summarise(
-        median = sum(median, na.rm = TRUE),
-        lower_20 = sum(lower_20, na.rm = TRUE),
-        upper_20 = sum(upper_20, na.rm = TRUE),
-        lower_50 = sum(lower_50, na.rm = TRUE),
-        upper_50 = sum(upper_50, na.rm = TRUE),
-        lower_90 = sum(lower_90, na.rm = TRUE),
-        upper_90 = sum(upper_90, na.rm = TRUE))
-
-  }
-
-  plot_weekly <- rep_estimates %>%
+  plot_weekly <- now_estimates$estimated_reported_cases$summarised %>%
+    rename(type_var = type) %>% # rename to keep other type variable which we want
+    left_join(., now_estimates$estimates$summarised[variable == "reported_cases"]) %>%
     mutate(
       year = year(date),
       month = month(date),
       week = week(date + days(3))
     ) %>%
-    left_join(plot_weekly_obs) %>%
+    full_join(., plot_weekly_obs) %>%
+    as.data.frame(.) %>%
     mutate(
       partial = ifelse(type == "estimate based on partial data", 1, 0),
-     # partial = ifelse(lead(partial) == 1, 1, partial),
+      partial = ifelse(lead(partial) == 1, 1, partial),
       forecast =  ifelse(type == "forecast", 1, 0),
-  #    forecast =  ifelse(lag(forecast) == 1 | lead(forecast) == 1, 1, forecast),
+      forecast =  ifelse(lag(forecast) == 1 | lead(forecast) == 1, 1, forecast),
     )
-
-  print(plot_weekly)
-  # Plot cases by reporting figure - need to clean and reduce this
 
   rep_week_fig <-
     ggplot(data = plot_weekly, aes(x = date)) +
@@ -102,7 +82,7 @@ viz_reported_week <- function(now_estimates, adm_names, reporting_freq){
     ) +
 
     guides(fill = guide_legend(title = ""), colour = guide_legend(title = "")) +
-    scale_x_date(date_breaks = "1 week", date_labels = "%b %d") +
+    scale_x_date(date_breaks = "1 month", date_labels = "%b %d") +
     theme(axis.text.x = element_text(angle = 90, hjust = 1),
           legend.position = "bottom") +
     scale_fill_manual(values = c("Estimate" = "#1d91c0", "Nowcast" = "#FBEE95", "Forecast" = "#7fcdbb"))

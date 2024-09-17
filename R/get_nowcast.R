@@ -28,15 +28,14 @@ get_nowcast <- function(data_rep,
                         incubation_period,
                         reporting_delay,
                         horizon,
-                        nowcast = FALSE,
                         reporting_freq = "weekly",
+                        week_effect = TRUE,
                         adm_level = adm_level,
                         date_from = min(data_rep$date),
                         create_report = TRUE){
 
 
   dates_obs <- data_rep %>% unnest() %>% pull(date)
-  print(dates_obs)
 
   iso_3_names <- data_rep %>% .[["iso_3_code"]] %>% .[1]
 
@@ -45,12 +44,10 @@ get_nowcast <- function(data_rep,
 
   if(reporting_freq == "daily"){
 
-    week_effect <- FALSE
     rt_estor <- rt_opts(pop = 1000000, future = "latest")
 
     } else if(reporting_freq == "weekly"){
 
-      week_effect <- TRUE
       rt_estor <- rt_opts(prior = list(mean = 2, sd = 0.2), rw = 7, pop = 1000000, future = "latest")
 
       } else {
