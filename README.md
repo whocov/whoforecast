@@ -46,7 +46,7 @@ test_data <- readxl::read_csv("/your_path/example_data.csv")
 run_forecast(
     data = test_data, # read in your data
     adm_level = "adm0", # set to "adm0" if national level and "adm1" if regional level analysis
-    rep_freq = "weekly", # set to "weekly" or "daily" based on the reporting frequency in the data
+    reporting_freq = "weekly", # set to "weekly" or "daily" based on the reporting frequency in the data
     nowcast = TRUE, # set to TRUE if you want to run nowcasting analysis
     generation_time = get_gen_time(), # set to the generation time for the disease - uses default but can be specified
     incubation_period = get_inc_period(), # set to the incubation period for the disease - uses default but can be specified
