@@ -53,7 +53,7 @@ run_forecast(
     forecast = TRUE, # set to TRUE if you want to include forecasting analysis
     horizon = 7, # set to the number of days you want to forecast
     create_report = TRUE, # set to TRUE if you want to create a report in Word
-    date_from = min(data$date), # set to the start date for the estimation
+    date_from = min(test_data$date), # set to the start date for the estimation
     date_var = "date", # set to the name of the date column in the data
     case_var = "cases" # set to the name of the cases column in the data
     )
