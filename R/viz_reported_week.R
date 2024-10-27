@@ -26,7 +26,7 @@ viz_reported_week <- function(now_estimates, adm_names, reporting_freq){
 
   plot_weekly <- now_estimates$estimated_reported_cases$summarised %>%
     rename(type_var = type) %>% # rename to keep other type variable which we want
-    left_join(., now_estimates$estimates$summarised[variable == "reported_cases"]) %>%
+    left_join(., now_estimates$estimates$summarised %>% filter(variable == "reported_cases")) %>%
     mutate(
       year = year(date),
       month = month(date),
