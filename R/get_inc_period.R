@@ -26,11 +26,7 @@ get_inc_period <- function(mean = 1.5,
 
   # Default from literature (add ref) 1.4 days (95% CI, 1.3–1.6)
 
-  dist <- list(mean = mean,
-               sd = sd,
-               dist = dist,
-               max = max_value
-  )
+  dist <- LogNormal(mean = Normal(mean, 0.2), sd = Normal(sd, 0.1), max = max_value)
 
   return(dist)
 

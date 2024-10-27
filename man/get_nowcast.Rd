@@ -11,8 +11,8 @@ get_nowcast(
   incubation_period,
   reporting_delay,
   horizon,
-  nowcast = FALSE,
   reporting_freq = "weekly",
+  week_effect = TRUE,
   adm_level = adm_level,
   date_from = min(data_rep$date),
   create_report = TRUE

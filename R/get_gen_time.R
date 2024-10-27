@@ -23,11 +23,7 @@ get_gen_time <- function(mean = 5,
   # Default for dengue which is equivalent to shape = 0.5,
   # scale = 1/0.1, interval = 1
 
-  dist <- list(mean = mean,
-               sd = sd,
-               dist = dist,
-               max = max_value
-               )
+  dist <- Gamma(mean = mean, sd = sd, max = max_value)
 
  return(dist)
 }

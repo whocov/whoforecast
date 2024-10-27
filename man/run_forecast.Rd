@@ -8,7 +8,7 @@ run_forecast(
   data,
   adm_level = "adm0",
   reporting_freq = "weekly",
-  nowcast = FALSE,
+  week_effect = TRUE,
   generation_time = get_gen_time(),
   incubation_period = get_inc_period(),
   reporting_delay = get_rep_delay(),

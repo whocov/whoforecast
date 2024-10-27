@@ -19,12 +19,7 @@ get_rep_delay <- function(mean = 2,
                           max_value = 10){
 
   # Default from EpiNow: convert_to_logmean(2, 1), sd = convert_to_logsd(2, 1), max = 10,
-
-  dist <- list(mean = mean,
-               sd = sd,
-               dist = dist,
-               max = max_value
-  )
+  dist <- LogNormal(mean = Normal(mean, 0.2), sd = Normal(1, 0.1), max = max_value)
 
   return(dist)
 

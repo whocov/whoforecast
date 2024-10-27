@@ -4,7 +4,7 @@
 \alias{viz_reported_week}
 \title{Visualise the reported and estimated reported cases by date of report}
 \usage{
-viz_reported_week(now_estimates, adm_names)
+viz_reported_week(now_estimates, adm_names, reporting_freq)
 }
 \arguments{
 \item{now_estimates}{List of estimates from the nowcasting/forecasting}

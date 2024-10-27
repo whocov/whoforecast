@@ -56,7 +56,7 @@ get_nowcast <- function(data_rep,
 
   if(!is.null(reporting_delay)){
 
-     delays <- delay_opts(incubation_period, reporting_delay)
+     delays <- delay_opts(incubation_period + reporting_delay)
 
       }else{
 
@@ -74,7 +74,8 @@ get_nowcast <- function(data_rep,
     obs = obs_opts(week_effect = week_effect, na = "accumulate"),
     gp = NULL,
     horizon = horizon,
-    stan = stan_opts(cores = 4, warmup = 250, samples = 1000))
+    stan = stan_opts(cores = 4, warmup = 250, samples = 1000),
+    logs = NULL)
 
   }, error = function(e) {
 
