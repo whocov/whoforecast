@@ -44,11 +44,12 @@ get_nowcast <- function(data_rep,
 
   if(reporting_freq == "daily"){
 
-    rt_estor <- rt_opts(pop = 1000000, future = "latest")
+    rt_estor <- rt_opts()
 
     } else if(reporting_freq == "weekly"){
 
-      rt_estor <- rt_opts(prior = list(mean = 2, sd = 0.2), rw = 7, pop = 1000000, future = "latest")
+      data_epinow <- fill_missing(data_epinow, missing_dates = "accumulate", initial_accumulate = 7)
+      rt_estor <- rt_opts(rw = 7)
 
       } else {
        message("Reporting frequency not recognised. Please specify 'daily' or 'weekly'")
@@ -63,6 +64,7 @@ get_nowcast <- function(data_rep,
         delays <- delay_opts(incubation_period)
 
   }
+
 
   model_ests <-  tryCatch({
 
@@ -89,8 +91,6 @@ get_nowcast <- function(data_rep,
     stop("Error: Model not fit. Check input parameters")
 
   }
-
-  print(model_ests)
 
 
   model_ests$fig_Rt <- viz_Rt(model_ests, paste(adm_names))
