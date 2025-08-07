@@ -50,7 +50,7 @@ run_forecast(
     generation_time = get_gen_time(), # set to the generation time for the disease - uses default but can be specified
     incubation_period = get_inc_period(), # set to the incubation period for the disease - uses default but can be specified
     reporting_delay = get_rep_delay(), # set to the reporting delay for the disease - uses default but can be specified
-    forecast = TRUE, # set to TRUE if you want to include forecasting analysis
+    run_forecast = TRUE, # set to TRUE if you want to include forecasting analysis
     horizon = 7, # set to the number of days you want to forecast
     create_report = TRUE, # set to TRUE if you want to create a report in Word
     date_from = min(test_data$date), # set to the start date for the estimation
